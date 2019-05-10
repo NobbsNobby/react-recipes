@@ -2,16 +2,18 @@ import React, { useState } from 'react';
 import { Mutation } from 'react-apollo';
 import { SIGNIN_USER } from '../../queries';
 import Error from '../Error';
+import {withRouter} from 'react-router-dom';
+
 
 const initialState = {
     username: '',
     password: ''
 };
 
-const Signin = () => {
+const Signin = (props) => {
     const [form, setForm] = useState(initialState);
 
-    const _changeField = (e,) => {
+    const _changeField = (e) => {
         setForm({ ...form, [e.target.name]: e.target.value });
     };
 
@@ -19,7 +21,9 @@ const Signin = () => {
         e.preventDefault();
         const { data } = await signinUser();
         localStorage.setItem('token', data.signinUser.token);
+        await props.refetch();
         setForm(initialState);
+        props.history.push('/')
     };
 
     const _validateForm = () => !form.username || !form.password;
@@ -66,4 +70,4 @@ const Signin = () => {
     </div>;
 };
 
-export default Signin;
+export default withRouter(Signin);

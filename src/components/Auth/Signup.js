@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { Mutation } from 'react-apollo';
 import { SIGNUP_USER } from '../../queries';
+import {withRouter} from 'react-router-dom';
 import Error from '../Error';
 
 const initialState = {
@@ -10,7 +11,7 @@ const initialState = {
     passwordConfirmation: ''
 };
 
-const Signup = () => {
+const Signup = (props) => {
     const [form, setForm] = useState(initialState);
 
     const _changeField = (e,) => {
@@ -21,7 +22,9 @@ const Signup = () => {
         e.preventDefault();
         const { data } = await signupUser();
         localStorage.setItem('token', data.signupUser.token);
+        await props.refetch();
         setForm(initialState);
+        props.history.push('/');
     };
 
     const _validateForm = () =>
@@ -87,4 +90,4 @@ const Signup = () => {
     </div>;
 };
 
-export default Signup;
+export default withRouter(Signup);
