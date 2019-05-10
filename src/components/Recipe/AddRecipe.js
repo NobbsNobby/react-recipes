@@ -1,10 +1,10 @@
 import React, { useState, useEffect } from 'react';
-import { Mutation } from 'react-apollo';
-import { ADD_RECIPE, GET_ALL_RECIPES, GET_CURRENT_USER, GET_USER_RECIPES } from '../../queries';
+import { Mutation, Query } from 'react-apollo';
+import { ADD_RECIPE, GET_ALL_RECIPES, GET_USER_RECIPES } from '../../queries';
 import Error from '../Error';
 import { withRouter } from 'react-router-dom';
 import withAuth from '../withAuth';
-
+import { gql } from 'apollo-boost';
 const initialState = {
     name: '',
     category: '',
@@ -12,6 +12,25 @@ const initialState = {
     instructions: '',
     username: ''
 };
+
+const query = gql`{
+    currencyOfInterest @client
+}`;
+
+const FormData = () => (
+<Query query={query}>
+    {({ data, loading, error }) => {
+        console.log('q data',data);
+        if (loading) return <div>Loading...</div>;
+        if (error) return <div>Error</div>;
+
+        return (
+            <div>123</div>
+        )
+            ;
+    }}
+</Query>
+)
 
 const AddRecipe = props => {
     const [form, setForm] = useState(initialState);
@@ -71,6 +90,7 @@ const AddRecipe = props => {
             {(addRecipe, { data, loading, error }) => {
                 return (
                     <div className="App">
+                        {/*<FormData/>*/}
                         <h2 className="App">Add Recipe</h2>
                         <form className="form" onSubmit={e => _handleSubmit(e, addRecipe)}>
                             <input

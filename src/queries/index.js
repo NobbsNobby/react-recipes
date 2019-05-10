@@ -2,7 +2,7 @@ import { gql } from 'apollo-boost';
 import { recipeFragments } from './fragments';
 /* Recipes Queries */
 const GET_ALL_RECIPES = gql`
-    query {
+    query getAllRecipes{
         getAllRecipes {
             _id
             name
@@ -12,7 +12,7 @@ const GET_ALL_RECIPES = gql`
 `;
 
 const GET_RECIPE = gql`
-    query($_id: ID!) {
+    query getRecipe($_id: ID!) {
         getRecipe(_id: $_id) {
             ...CompleteRecipe
         }
@@ -21,7 +21,7 @@ const GET_RECIPE = gql`
 `;
 
 const SEARCH_RECIPES = gql`
-    query($searchTerm: String) {
+    query searchRecipes($searchTerm: String) {
         searchRecipes(searchTerm: $searchTerm) {
             ...LikeRecipe
         }
@@ -30,7 +30,7 @@ const SEARCH_RECIPES = gql`
 `;
 
 const GET_USER_RECIPES = gql`
-    query($username: String!) {
+    query getUserRecipes($username: String!) {
         getUserRecipes(username: $username) {
             ...LikeRecipe
         }
@@ -41,7 +41,7 @@ const GET_USER_RECIPES = gql`
 /* Recipes Mutations */
 
 const ADD_RECIPE = gql`
-    mutation($name: String!,
+    mutation addRecipe($name: String!,
         $category: String!
         $description: String!,
         $instructions: String!,
@@ -60,7 +60,7 @@ const ADD_RECIPE = gql`
 `;
 
 const DELETE_USER_RECIPE = gql`
-    mutation($_id: ID!){
+    mutation deleteUserRecipe($_id: ID!){
         deleteUserRecipe(_id: $_id) {
             _id
         }
@@ -69,7 +69,7 @@ const DELETE_USER_RECIPE = gql`
 /* User Queries */
 
 const GET_CURRENT_USER = gql`
-    query {
+    query getCurrentUser{
         getCurrentUser {
             username
             joinDate
@@ -81,7 +81,7 @@ const GET_CURRENT_USER = gql`
 /* User Mutations */
 
 const SIGNIN_USER = gql`
-    mutation($username: String!, $password: String!) {
+    mutation signinUser($username: String!, $password: String!) {
         signinUser(username: $username, password: $password) {
             token
         }
@@ -89,7 +89,7 @@ const SIGNIN_USER = gql`
 `;
 
 const SIGNUP_USER = gql`
-    mutation($username: String!, $email: String!, $password: String!) {
+    mutation signupUser($username: String!, $email: String!, $password: String!) {
         signupUser(username: $username, email: $email, password: $password) {
             token
         }

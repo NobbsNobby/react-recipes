@@ -2,7 +2,6 @@
 import React from 'react';
 import ReactDOM from 'react-dom';
 import { BrowserRouter as Router, Route, Switch, Redirect } from 'react-router-dom';
-import ApolloClient from 'apollo-boost';
 import { ApolloProvider } from 'react-apollo';
 
 // Components
@@ -18,25 +17,40 @@ import Search from './components/Recipe/Search';
 //Instruments
 import './index.css';
 
+// Apollo
+import { ApolloClient } from 'apollo-client';
+import { InMemoryCache } from 'apollo-cache-inmemory';
+import { HttpLink } from 'apollo-link-http';
+import { onError } from 'apollo-link-error';
+import { ApolloLink } from 'apollo-link';
+import { setContext } from 'apollo-link-context';
+
 
 const client = new ApolloClient({
-    uri: 'http://localhost:4000/graphql',
-    fetchOptions: {
-        credentials: 'include'
-    },
-    request: operation => {
-        const token = localStorage.getItem('token');
-        operation.setContext({
-            headers: {
-                authorization: token
+    link: ApolloLink.from([
+        setContext(() => {
+            const token =  localStorage.getItem('token');
+            return {
+                headers: {
+                    authorization: token
+                }
             }
-        });
-    },
-    onError: ({ networkError }) => {
-        if (networkError) {
-            console.log('Network Error', networkError);
-        }
-    }
+        }),
+        onError(({ graphQLErrors, networkError }) => {
+            if (graphQLErrors)
+                graphQLErrors.map(({ message, locations, path }) =>
+                    console.log(
+                        `[GraphQL error]: Message: ${message}, Location: ${locations}, Path: ${path}`,
+                    ),
+                );
+            if (networkError) console.log(`[Network error]: ${networkError}`);
+        }),
+        new HttpLink({
+            uri: 'http://localhost:4000/graphql',
+            credentials: 'same-origin'
+        })
+    ]),
+    cache: new InMemoryCache()
 });
 
 const Root = ({ refetch, session }) => {
