@@ -1,4 +1,4 @@
-import { gql } from 'apollo-boost';
+import  gql  from 'graphql-tag';
 import { recipeFragments } from './fragments';
 /* Recipes Queries */
 const GET_ALL_RECIPES = gql`
